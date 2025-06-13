@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DICOM Viewer - Study: {{ study.accession_number }}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/openseadragon.min.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0; /* Light text color */
+        }
+        h1, h2, h3 { 
+            color: #ffffff; /* White title */
+            margin-top: 20px; 
+            margin-bottom: 10px;
+        }
+        h1 {
+            text-align: center;
+            width: 100%;
+        }
+        .error-message { 
+            color: #ff6b6b; /* Reddish error message */
+            font-weight: bold; 
+            margin-top: 20px; 
+        }
+        .study-info {
+            background-color: #2c2c2c;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border: 1px solid #444;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .study-info p {
+            margin: 5px 15px;
+            font-size: 0.95em;
+        }
+        .study-info strong {
+            color: #bbbbbb;
+        }
+
+        /* NEW: Controls for hierarchical navigation */
+        .navigation-controls {
+            background-color: #2c2c2c;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 1200px;
+            border: 1px solid #444;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+        .navigation-controls div {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .navigation-controls label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #bbbbbb;
+        }
+        .navigation-controls select {
+            padding: 8px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #3a3a3a;
+            color: #e0e0e0;
+            width: 250px; /* Adjust as needed */
+        }
+        /* End NEW */
+
+        /* Image Grid for Study Viewer */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #2c2c2c;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border: 1px solid #444;
+            min-height: 200px; /* Ensure grid has some height even if empty */
+        }
+        .image-card {
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #555;
+        }
+        .image-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .image-card img {
+            width: 100%;
+            height: 150px; /* Fixed height for thumbnails */
+            object-fit: contain; /* Ensure image fits without cropping */
+            background-color: #000;
+            border-bottom: 1px solid #555;
+        }
+        .image-card p {
+            padding: 10px;
+            margin: 0;
+            font-size: 0.85em;
+            color: #e0e0e0;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #6c757d; /* Gray for back button */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.2s ease;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+
+
+        /* Modal Popup Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.85); /* More opaque background for modal */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1a1a1a; /* Dark background for modal content */
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #555; /* Darker border */
+            width: 90%; 
+            max-width: 1200px; 
+            height: 90vh; 
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Darker shadow */
+            color: #e0e0e0; /* Light text for modal */
+        }
+        .close-button {
+            color: #bbb; /* Lighter close button */
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            align-self: flex-end; 
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: #ffffff; /* White on hover */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .viewer-area {
+            flex-grow: 1; 
+            background-color: #000; /* Pure black for viewer background */
+            margin-bottom: 10px;
+            border: 1px solid #333; /* Darker border around viewer */
+            position: relative; /* Diperlukan untuk overlay teks */
+        }
+        .controls-area {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px 0;
+            background-color: #2c2c2c; /* Darker background for controls */
+            border-radius: 5px;
+            border: 1px solid #444; /* Subtle border */
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #3a3a3a; /* Darker background for control group */
+            padding: 8px 12px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .control-group label {
+            color: #bbbbbb; /* Lighter label color */
+            font-size: 0.9em;
+        }
+        .controls-area button, .controls-area input[type="number"] {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s ease;
+        }
+        .controls-area button.enhance-button {
+            background-color: #ffc107; /* Warna kuning untuk enhance */
+            color: #333;
+        }
+        .controls-area button.enhance-button.active {
+            background-color: #e0a800; /* Warna kuning lebih gelap saat aktif */
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5); /* Darker inset shadow */
+        }
+        .controls-area button.enhance-button:hover {
+            background-color: #e0a800;
+        }
+
+        .controls-area input[type="number"] {
+            background-color: #3a3a3a; /* Dark input background */
+            color: #e0e0e0; /* Light text for number input */
+            border: 1px solid #555; /* Darker border */
+            width: 70px;
+            text-align: center;
+        }
+
+        /* Styles for the modal header info */
+        .modal-header-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 20px; /* Row and column gap */
+            margin-top: 10px;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background-color: #2c2c2c;
+            border-radius: 5px;
+            border: 1px solid #444;
+        }
+
+        .modal-header-info p {
+            margin: 0;
+            font-size: 0.9em;
+        }
+
+        .modal-header-info strong {
+            color: #bbbbbb;
+        }
+        
+        /* Overlay text for image numbering */
+        #imageCounter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            z-index: 1001; /* Di atas OpenSeadragon */
+        }
+    </style>
+</head>
+<body>
+    <h1>Detail Studi DICOM</h1>
+    <a href="{{ url_for('index') }}" class="back-button">&larr; Kembali ke Daftar Studi</a>
+    
+    <h2>Informasi Pasien dan Studi</h2>
+    {% if error %}
+        <p class="error-message">{{ error }}</p>
+    {% else %}
+        <div class="study-info">
+            <p><strong>Nama Pasien:</strong> {{ study.patient_name }}</p>
+            <p><strong>ID Pasien:</strong> {{ study.patient_id }}</p>
+            <p><strong>Accession Number:</strong> {{ study.accession_number }}</p>
+            <p><strong>Tanggal Studi:</strong> {{ study.study_date }}</p>
+            <p><strong>Deskripsi Studi:</strong> {{ study.study_description }}</p>
+            <p><strong>UID Studi:</strong> {{ study.study_instance_uid }}</p>
+        </div>
+
+        <h3>Navigasi Gambar:</h3>
+        <div class="navigation-controls">
+            <div>
+                <label for="accessionSelect">Accession Number:</label>
+                <select id="accessionSelect"></select>
+            </div>
+            <div>
+                <label for="seriesSelect">Series:</label>
+                <select id="seriesSelect"></select>
+            </div>
+        </div>
+
+        <h3>Gambar dalam Seri ini:</h3>
+        {% if not images %}
+            <p id="noImagesMessage">Tidak ada gambar yang ditemukan untuk studi ini.</p>
+        {% else %}
+            <div id="imageGrid" class="image-grid">
+                </div>
+        {% endif %}
+    {% endif %}
+
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 id="modalTitle"></h3>
+            <div class="modal-header-info">
+                <p><strong>Nama Pasien:</strong> {{ study.patient_name }}</p>
+                <p><strong>ID Pasien:</strong> {{ study.patient_id }}</p>
+                <p><strong>Accession Number:</strong> {{ study.accession_number }}</p>
+                <p><strong>Tanggal Studi:</strong> {{ study.study_date }}</p>
+                <p>
+                    <input type="text" 
+                           value="{{ request.url_root }}dicom_viewer?patient_id={{ study.patient_id }}&accession_number={{ study.accession_number }}" 
+                           readonly 
+                           style="width: calc(100% - 20px); padding: 5px; border-radius: 4px; border: 1px solid #555; background-color: #3a3a3a; color: #e0e0e0; font-family: monospace;"
+                           onclick="this.select(); document.execCommand('copy'); alert('URL disalin ke clipboard!');">
+                </p>
+            </div>
+            <div class="viewer-area" id="openseadragon-viewer">
+                <div id="imageCounter"></div> 
+            </div>
+            <div class="controls-area">
+                <button onclick="currentViewer.viewport.zoomBy(1.2)">Perbesar</button>
+                <button onclick="currentViewer.viewport.zoomBy(1/1.2)">Perkecil</button>
+                <button onclick="currentViewer.viewport.setRotation(currentViewer.viewport.getRotation() + 90)">Putar Kanan</button>
+                <button onclick="currentViewer.viewport.setRotation(currentViewer.viewport.getRotation() - 90)">Putar Kiri</button>
+                <button onclick="currentViewer.viewport.goHome()">Reset Tampilan</button>
+
+                <div class="control-group">
+                    <label for="modalWindowLevel">WL:</label>
+                    <input type="number" id="modalWindowLevel" step="1" />
+                </div>
+                <div class="control-group">
+                    <label for="modalWindowWidth">WW:</label>
+                    <input type="number" id="modalWindowWidth" step="1" />
+                </div>
+                <button onclick="applyWindowing()">Terapkan Window</button>
+
+                <button id="claheButton" class="enhance-button" onclick="toggleEnhancement('clahe')">Toggle CLAHE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="initialImageFromEMRData" style="display:none;">{{ initial_image_to_load | tojson }}</div>
+    <div id="allImagesRawData" style="display:none;">{{ images | tojson }}</div> 
+
+    <script>
+        var imageModal = document.getElementById('imageModal');
+        var closeButton = document.querySelector('.close-button');
+        var viewerContainer = document.getElementById('openseadragon-viewer');
+        var modalTitle = document.getElementById('modalTitle');
+        var imageCounter = document.getElementById('imageCounter'); 
+        var imageGrid = document.getElementById('imageGrid'); 
+        var accessionSelect = document.getElementById('accessionSelect'); 
+        var seriesSelect = document.getElementById('seriesSelect'); 
+        var noImagesMessage = document.getElementById('noImagesMessage'); 
+
+        var currentViewer = null; 
+        var currentFilename = ''; 
+        var currentWL = 0; 
+        var currentWW = 0;
+        var currentEnhancement = ''; 
+
+        var isDragging = false;
+        var startX = 0;
+        var startY = 0;
+
+        // Data yang sudah diproses dari backend
+        var allImagesData = {}; // Struktur: { accession_uid: { series_uid: [image_objects] } }
+        var studyAccessions = []; // List of unique accession numbers
+        var currentAccessionUID = '';
+        var currentSeriesImages = []; // Images for the currently selected series
+        var currentImageIndex = -1;
+
+        // --- Data Loading and Initialization ---
+        document.addEventListener('DOMContentLoaded', async (event) => {
+            console.log("DOMContentLoaded fired.");
+            const allImagesRawDataElement = document.getElementById('allImagesRawData');
+            let rawImages = [];
+
+            if (allImagesRawDataElement && allImagesRawDataElement.textContent) {
+                const rawJson = allImagesRawDataElement.textContent.trim();
+                if (rawJson && rawJson !== "null") {
+                    rawImages = JSON.parse(rawJson);
+                    console.log("Raw images loaded:", rawImages);
+                } else {
+                    console.log("No raw images data available or data is null/empty.");
+                }
+            }
+
+            // Process raw images into structured allImagesData
+            if (rawImages.length > 0) {
+                rawImages.forEach(img => {
+                    const accession = img.accession_number || 'UNKNOWN_ACCESSION'; // Handle missing accession
+                    const seriesUID = img.series_instance_uid;
+                    
+                    if (!allImagesData[accession]) {
+                        allImagesData[accession] = {};
+                    }
+                    if (!allImagesData[accession][seriesUID]) {
+                        allImagesData[accession][seriesUID] = [];
+                    }
+                    allImagesData[accession][seriesUID].push(img);
+                });
+
+                // Sort images within each series by image_number
+                for (const accession in allImagesData) {
+                    for (const seriesUID in allImagesData[accession]) {
+                        allImagesData[accession][seriesUID].sort((a, b) => a.image_number - b.image_number);
+                    }
+                }
+
+                // Populate accessionSelect
+                studyAccessions = Object.keys(allImagesData).sort(); // Sort accession numbers alphabetically
+                populateAccessionSelect();
+
+                // Handle initial image from EMR link
+                const initialImageFromEMR_element = document.getElementById('initialImageFromEMRData');
+                let initialImageFromEMR_path = '';
+                if (initialImageFromEMR_element && initialImageFromEMR_element.textContent) {
+                    initialImageFromEMR_path = initialImageFromEMR_element.textContent.trim();
+                    if (initialImageFromEMR_path.startsWith('"') && initialImageFromEMR_path.endsWith('"')) {
+                        initialImageFromEMR_path = initialImageFromEMR_path.slice(1, -1);
+                    }
+                }
+                
+                console.log("initialImageFromEMR_path (processed):", initialImageFromEMR_path);
+
+                if (initialImageFromEMR_path && initialImageFromEMR_path !== "null") { 
+                    await loadInitialImageFromEMR(initialImageFromEMR_path);
+                } else {
+                    // Default to loading the first accession and its first series
+                    if (studyAccessions.length > 0) {
+                        const firstAccession = studyAccessions[0];
+                        accessionSelect.value = firstAccession;
+                        populateSeriesSelect(firstAccession);
+                        if (seriesSelect.options.length > 0) {
+                            const firstSeriesUID = seriesSelect.value;
+                            loadSeriesImages(firstAccession, firstSeriesUID);
+                            // Load the first image of the first series
+                            if (currentSeriesImages.length > 0) {
+                                openImageModal(currentSeriesImages[0].image_path_name);
+                            }
+                        }
+                    } else {
+                        // No images at all
+                        imageGrid.innerHTML = '';
+                        if (noImagesMessage) noImagesMessage.style.display = 'block';
+                    }
+                }
+            } else {
+                // No images at all
+                imageGrid.innerHTML = '';
+                if (noImagesMessage) noImagesMessage.style.display = 'block';
+            }
+        });
+
+        // --- Dropdown Population Functions ---
+        function populateAccessionSelect() {
+            accessionSelect.innerHTML = ''; // Clear existing options
+            studyAccessions.forEach(acc => {
+                const option = document.createElement('option');
+                option.value = acc;
+                option.textContent = acc;
+                accessionSelect.appendChild(option);
+            });
+            if (studyAccessions.length > 0) {
+                accessionSelect.value = studyAccessions[0]; // Select the first by default
+                currentAccessionUID = studyAccessions[0];
+                populateSeriesSelect(currentAccessionUID);
+            }
+            accessionSelect.onchange = handleAccessionChange;
+        }
+
+        function populateSeriesSelect(accession) {
+            seriesSelect.innerHTML = ''; // Clear existing options
+            const seriesMap = allImagesData[accession];
+            if (seriesMap) {
+                // Sort series by series_number
+                const sortedSeriesUids = Object.keys(seriesMap).sort((uidA, uidB) => {
+                    // Find an image from each series to get series_number for sorting
+                    const seriesA_firstImage = seriesMap[uidA][0];
+                    const seriesB_firstImage = seriesMap[uidB][0];
+                    return (seriesA_firstImage ? seriesA_firstImage.series_number : 0) - 
+                           (seriesB_firstImage ? seriesB_firstImage.series_number : 0);
+                });
+
+                sortedSeriesUids.forEach(seriesUID => {
+                    const firstImageInSeries = seriesMap[seriesUID][0];
+                    if (firstImageInSeries) {
+                        const option = document.createElement('option');
+                        option.value = seriesUID;
+                        option.textContent = `Series ${firstImageInSeries.series_number} (${firstImageInSeries.modality || 'N/A'}) - ${firstImageInSeries.series_description || 'No Description'}`;
+                        seriesSelect.appendChild(option);
+                    }
+                });
+            }
+            if (seriesSelect.options.length > 0) {
+                seriesSelect.value = seriesSelect.options[0].value; // Select the first series by default
+                loadSeriesImages(accession, seriesSelect.value); // Load images for the first series
+            } else {
+                imageGrid.innerHTML = '';
+                if (noImagesMessage) noImagesMessage.style.display = 'block';
+            }
+            seriesSelect.onchange = handleSeriesChange;
+        }
+
+        // --- Event Handlers for Dropdowns ---
+        function handleAccessionChange() {
+            currentAccessionUID = accessionSelect.value;
+            populateSeriesSelect(currentAccessionUID);
+        }
+
+        function handleSeriesChange() {
+            const selectedSeriesUID = seriesSelect.value;
+            loadSeriesImages(currentAccessionUID, selectedSeriesUID);
+            // Optionally, open the first image of the newly selected series automatically
+            if (currentSeriesImages.length > 0) {
+                openImageModal(currentSeriesImages[0].image_path_name);
+            }
+        }
+
+        // --- Load Images into Grid ---
+        function loadSeriesImages(accession, seriesUID) {
+            imageGrid.innerHTML = ''; // Clear current images
+            if (noImagesMessage) noImagesMessage.style.display = 'none'; // Hide "no images" message
+
+            currentSeriesImages = allImagesData[accession]?.[seriesUID] || [];
+            console.log(`Loading ${currentSeriesImages.length} images for Accession: ${accession}, Series: ${seriesUID}`);
+
+            if (currentSeriesImages.length === 0) {
+                if (noImagesMessage) noImagesMessage.style.display = 'block';
+                return;
+            }
+
+            currentSeriesImages.forEach(image => {
+                const imageCard = document.createElement('div');
+                imageCard.classList.add('image-card');
+                imageCard.dataset.filename = image.image_path_name;
+                imageCard.dataset.seriesInstanceUid = image.series_instance_uid;
+                imageCard.dataset.imageNumber = image.image_number;
+
+                imageCard.innerHTML = `
+                    <img src="/image_data/${encodeURIComponent(image.image_path_name)}" alt="DICOM Image Thumbnail">
+                    <p>Series: ${image.series_number} (${image.modality || 'N/A'})</p>
+                    <p>Image: ${image.image_number}</p>
+                `;
+                imageCard.addEventListener('click', function() {
+                    currentImageIndex = currentSeriesImages.findIndex(img => img.image_path_name === image.image_path_name);
+                    modalTitle.textContent = `Exam: {{ study.study_description }} | Series: ${image.series_number} (${image.modality || 'N/A'})`;
+                    openImageModal(image.image_path_name);
+                });
+                imageGrid.appendChild(imageCard);
+            });
+        }
+
+
+        // --- Modal and OpenSeadragon Functions (mostly unchanged, adjusted for new data structure) ---
+        closeButton.onclick = function() {
+            imageModal.style.display = "none";
+            if (currentViewer) {
+                currentViewer.destroy();
+                currentViewer = null;
+                viewerContainer.innerHTML = ''; 
+            }
+            isDragging = false;
+            currentEnhancement = ''; 
+            document.getElementById('claheButton').classList.remove('active'); 
+            imageCounter.textContent = ''; 
+            viewerContainer.removeEventListener('wheel', handleImageScroll);
+        }
+
+        window.onclick = function(event) {
+            if (event.target == imageModal) {
+                imageModal.style.display = "none";
+                if (currentViewer) {
+                    currentViewer.destroy();
+                    currentViewer = null;
+                    viewerContainer.innerHTML = '';
+                }
+                isDragging = false;
+                currentEnhancement = ''; 
+                document.getElementById('claheButton').classList.remove('active');
+                imageCounter.textContent = ''; 
+                viewerContainer.removeEventListener('wheel', handleImageScroll);
+            }
+        }
+
+        async function openImageModal(filename) {
+            console.log("openImageModal called with filename:", filename);
+            currentFilename = filename; 
+            imageModal.style.display = "flex";
+            console.log("Modal display set to flex.");
+
+            currentEnhancement = ''; 
+            document.getElementById('claheButton').classList.remove('active');
+
+            updateImageCounter();
+
+            try {
+                const metadataResponse = await fetch(`/image_metadata/${encodeURIComponent(filename)}`); 
+                if (!metadataResponse.ok) {
+                    throw new Error(`HTTP error! status: ${metadataResponse.status}`);
+                }
+                const metadata = await metadataResponse.json();
+                currentWL = parseFloat(metadata.default_wl); 
+                currentWW = parseFloat(metadata.default_ww); 
+                document.getElementById('modalWindowLevel').value = Math.round(currentWL);
+                document.getElementById('modalWindowWidth').value = Math.round(currentWW);
+            } catch (e) {
+                console.error("Gagal mengambil metadata windowing default:", e);
+                currentWL = 127;
+                currentWW = 255;
+                document.getElementById('modalWindowLevel').value = Math.round(currentWL);
+                document.getElementById('modalWindowWidth').value = Math.round(currentWW);
+            }
+
+            if (currentViewer) {
+                currentViewer.destroy();
+                viewerContainer.innerHTML = ''; 
+            }
+
+            let imageUrl = `/image_data/${encodeURIComponent(filename)}?wl=${currentWL}&ww=${currentWW}`; 
+            if (currentEnhancement) {
+                imageUrl += `&enhance=${currentEnhancement}`;
+            }
+
+            currentViewer = OpenSeadragon({
+                id: "openseadragon-viewer",
+                prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.1/images/",
+                tileSources: {
+                    type: 'image',
+                    url: imageUrl, 
+                    buildPyramid: true
+                },
+                showNavigator:  true,
+                showRotationControl: false,
+                showZoomControl: false,
+                showHomeControl: false,
+                debugMode: false
+            });
+
+            currentViewer.addHandler('canvas-press', function(event) {
+                if (event.button === 2 || event.originalEvent.ctrlKey) { 
+                    isDragging = true;
+                    startX = event.position.x;
+                    startY = event.position.y;
+                    event.preventDefaultAction = true; 
+                }
+            });
+
+            currentViewer.addHandler('canvas-drag', function(event) {
+                if (isDragging) {
+                    var dx = event.position.x - startX;
+                    var dy = event.position.y - startY;
+
+                    var sensitivity = 0.5; 
+
+                    currentWL += dy * sensitivity; 
+                    currentWW += dx * sensitivity; 
+
+                    if (currentWW < 1) currentWW = 1; 
+
+                    document.getElementById('modalWindowLevel').value = Math.round(currentWL);
+                    document.getElementById('modalWindowWidth').value = Math.round(currentWW);
+
+                    applyWindowing(); 
+
+                    startX = event.position.x;
+                    startY = event.position.y;
+
+                    event.preventDefaultAction = true;
+                }
+            });
+
+            currentViewer.addHandler('canvas-release', function(event) {
+                if (isDragging) {
+                    isDragging = false;
+                }
+            });
+
+            viewerContainer.addEventListener('contextmenu', function(event) {
+                event.preventDefault(); 
+            });
+
+            if (!viewerContainer.hasAttribute('data-scroll-listener')) {
+                viewerContainer.addEventListener('wheel', handleImageScroll);
+                viewerContainer.setAttribute('data-scroll-listener', 'true');
+            }
+        }
+
+        function applyWindowing() {
+            if (!currentViewer || !currentFilename) return; 
+
+            var wl = parseFloat(document.getElementById('modalWindowLevel').value); 
+            var ww = parseFloat(document.getElementById('modalWindowWidth').value);
+            
+            if (isNaN(wl) || isNaN(ww)) {
+                console.error('Invalid WL or WW values.');
+                return;
+            }
+            if (ww < 1) ww = 1; 
+
+            currentWL = wl; 
+            currentWW = ww; 
+
+            let newImageUrl = `/image_data/${encodeURIComponent(currentFilename)}?wl=${currentWL}&ww=${currentWW}`; 
+            if (currentEnhancement) {
+                newImageUrl += `&enhance=${currentEnhancement}`;
+            }
+            
+            currentViewer.open({
+                type: 'image',
+                url: newImageUrl,
+                buildPyramid: true
+            });
+
+            console.log("Applying Window Level:", currentWL, "Window Width:", currentWW, "Enhancement:", currentEnhancement);
+        }
+
+        function toggleEnhancement(mode) {
+            const claheButton = document.getElementById('claheButton');
+            if (currentEnhancement === mode) {
+                currentEnhancement = '';
+                claheButton.classList.remove('active');
+            } else {
+                currentEnhancement = mode;
+                claheButton.classList.add('active');
+            }
+            applyWindowing(); 
+        }
+
+        function handleImageScroll(event) {
+            event.preventDefault(); 
+
+            if (!currentSeriesImages || currentSeriesImages.length <= 1) {
+                return; 
+            }
+
+            let nextImageIndex = currentImageIndex;
+
+            if (event.deltaY > 0) { // Scroll down
+                nextImageIndex = (currentImageIndex + 1) % currentSeriesImages.length;
+            } else { // Scroll up
+                nextImageIndex = (currentImageIndex - 1 + currentSeriesImages.length) % currentSeriesImages.length;
+            }
+
+            if (nextImageIndex !== currentImageIndex) {
+                currentImageIndex = nextImageIndex;
+                const nextImageFilename = currentSeriesImages[currentImageIndex].image_path_name;
+                
+                const currentImageObj = currentSeriesImages[currentImageIndex];
+                modalTitle.textContent = `Exam: {{ study.study_description }} | Series: ${currentImageObj.series_number} (${currentImageObj.modality || 'N/A'})`;
+                openImageModal(nextImageFilename); 
+            }
+        }
+
+        function updateImageCounter() {
+            if (currentSeriesImages.length > 0 && currentImageIndex !== -1) {
+                const currentImage = currentSeriesImages[currentImageIndex];
+                imageCounter.textContent = `Image: ${currentImage.image_number} / ${currentSeriesImages.length} (Series ${currentImage.series_number})`;
+            } else {
+                imageCounter.textContent = '';
+            }
+        }
+
+        async function loadInitialImageFromEMR(initialImagePath) {
+            console.log("Attempting to load initial image from EMR link:", initialImagePath);
+            
+            let foundImage = null;
+            let foundAccession = null;
+            let foundSeriesUID = null;
+
+            // Iterate through the structured data to find the image
+            for (const accessionKey in allImagesData) {
+                for (const seriesUIDKey in allImagesData[accessionKey]) {
+                    const imagesInSeries = allImagesData[accessionKey][seriesUIDKey];
+                    const image = imagesInSeries.find(img => img.image_path_name === initialImagePath);
+                    if (image) {
+                        foundImage = image;
+                        foundAccession = accessionKey;
+                        foundSeriesUID = seriesUIDKey;
+                        break;
+                    }
+                }
+                if (foundImage) break;
+            }
+
+            if (foundImage) {
+                console.log("Initial image found:", foundImage);
+                // Set the correct dropdown values
+                accessionSelect.value = foundAccession;
+                currentAccessionUID = foundAccession;
+                
+                // Populate series dropdown based on found accession
+                populateSeriesSelect(foundAccession);
+                seriesSelect.value = foundSeriesUID;
+
+                // Load images for the found series into the grid
+                loadSeriesImages(foundAccession, foundSeriesUID);
+
+                // Set currentSeriesImages and currentImageIndex
+                currentSeriesImages = allImagesData[foundAccession][foundSeriesUID];
+                currentImageIndex = currentSeriesImages.findIndex(img => img.image_path_name === initialImagePath);
+                
+                // Set modal title
+                modalTitle.textContent = `Exam: {{ study.study_description }} | Series: ${foundImage.series_number} (${foundImage.modality || 'N/A'})`;
+                
+                // Open the modal with the found image
+                await openImageModal(initialImagePath);
+            } else {
+                console.error("Initial image data not found in allImagesData for path:", initialImagePath);
+                // Fallback: If initial image not found, try to load the first image of the study
+                if (studyAccessions.length > 0) {
+                    const firstAccession = studyAccessions[0];
+                    accessionSelect.value = firstAccession;
+                    populateSeriesSelect(firstAccession);
+                    if (seriesSelect.options.length > 0) {
+                        const firstSeriesUID = seriesSelect.value;
+                        loadSeriesImages(firstAccession, firstSeriesUID);
+                        if (currentSeriesImages.length > 0) {
+                            openImageModal(currentSeriesImages[0].image_path_name);
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
