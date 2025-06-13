@@ -1,1 +1,1 @@
-# dicom-worklist
+# dicom-viewer
