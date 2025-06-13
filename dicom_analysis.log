@@ -1,0 +1,179 @@
+2025-06-11 03:03:28,868 - dicom_xray_analyzer - INFO - Menggunakan perangkat: cpu
+2025-06-11 03:03:28,870 - dicom_xray_analyzer - INFO - Memproses folder DICOM: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186
+2025-06-11 03:03:30,448 - dicom_xray_analyzer - INFO - Memuat model SwinUNETR...
+2025-06-11 03:03:30,448 - dicom_xray_analyzer - ERROR - Gagal memuat model: missing a required argument: 'img_size'
+2025-06-11 03:03:30,448 - dicom_xray_analyzer - ERROR - Gagal memproses DICOM: missing a required argument: 'img_size'
+Traceback (most recent call last):
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 266, in main
+    model = load_model(device)
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 87, in load_model
+    model = SwinUNETR(
+  File "/opt/anaconda3/envs/monai_env/lib/python3.10/site-packages/monai/utils/deprecate_utils.py", line 208, in _wrapper
+    binding = sig.bind(*args, **kwargs).arguments
+  File "/opt/anaconda3/envs/monai_env/lib/python3.10/inspect.py", line 3186, in bind
+    return self._bind(args, kwargs)
+  File "/opt/anaconda3/envs/monai_env/lib/python3.10/inspect.py", line 3101, in _bind
+    raise TypeError(msg) from None
+TypeError: missing a required argument: 'img_size'
+2025-06-11 03:06:10,027 - dicom_xray_analyzer - INFO - Menggunakan perangkat: cpu
+2025-06-11 03:06:10,029 - dicom_xray_analyzer - INFO - Memproses folder DICOM: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186
+2025-06-11 03:06:10,029 - dicom_xray_analyzer - ERROR - Gagal memproses DICOM: name 'load_dicom_with_metadata' is not defined
+Traceback (most recent call last):
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 122, in main
+    image_path, dicom_path, base_filename, metadata = load_dicom_with_metadata(dicom_folder)
+NameError: name 'load_dicom_with_metadata' is not defined
+2025-06-11 03:13:42,200 - dicom_xray_analyzer - INFO - Menggunakan perangkat: cpu
+2025-06-11 03:13:42,207 - dicom_xray_analyzer - INFO - Memproses folder DICOM: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186
+2025-06-11 03:13:42,207 - dicom_xray_analyzer - ERROR - Gagal memproses DICOM: name 'load_dicom_with_metadata' is not defined
+Traceback (most recent call last):
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 77, in main
+    image_path, dicom_path, base_filename, metadata = load_dicom_with_metadata(dicom_folder)
+NameError: name 'load_dicom_with_metadata' is not defined
+2025-06-11 03:15:50,835 - dicom_xray_analyzer - INFO - Menggunakan perangkat: cpu
+2025-06-11 03:15:50,839 - dicom_xray_analyzer - INFO - Memproses folder DICOM: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186
+2025-06-11 03:15:50,850 - dicom_xray_analyzer - INFO - Metadata DICOM dari 1.2.840.113619.2.421.4.8323328.1734316943.671158.dcm: {'PatientID': '0000001621', 'PatientName': 'HENDI^HENDI^^MR', 'StudyDate': '20241216', 'Modality': 'DX', 'BodyPartExamined': 'CHEST', 'StudyDescription': 'CR X-Ray Thorax AP / PA', 'Rows': 3181, 'Columns': 3848, 'PixelSpacing': [0.097928, 0.097928]}
+2025-06-11 03:15:50,859 - dicom_xray_analyzer - INFO - DICOM file path: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186/1.2.840.113619.2.421.4.8323328.1734316943.671158.dcm
+2025-06-11 03:15:50,859 - dicom_xray_analyzer - INFO - Ukuran gambar asli: 3848x3181
+2025-06-11 03:15:50,859 - dicom_xray_analyzer - INFO - Memuat model SwinUNETR dari xray_segmentation_model.pt dengan ukuran (96, 96)...
+2025-06-11 03:15:50,968 - dicom_xray_analyzer - ERROR - Gagal memuat model dari xray_segmentation_model.pt: Model tidak ditemukan di: xray_segmentation_model.pt. Pastikan nama dan lokasi benar.
+Traceback (most recent call last):
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 121, in load_model
+    raise FileNotFoundError(f"Model tidak ditemukan di: {MODEL_PATH}. Pastikan nama dan lokasi benar.")
+FileNotFoundError: Model tidak ditemukan di: xray_segmentation_model.pt. Pastikan nama dan lokasi benar.
+2025-06-11 03:17:27,812 - dicom_xray_analyzer - INFO - Menggunakan perangkat: cpu
+2025-06-11 03:17:27,815 - dicom_xray_analyzer - INFO - Memproses folder DICOM: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186
+2025-06-11 03:17:27,821 - dicom_xray_analyzer - INFO - Metadata DICOM dari 1.2.840.113619.2.421.4.8323328.1734316943.671158.dcm: {'PatientID': '0000001621', 'PatientName': 'HENDI^HENDI^^MR', 'StudyDate': '20241216', 'Modality': 'DX', 'BodyPartExamined': 'CHEST', 'StudyDescription': 'CR X-Ray Thorax AP / PA', 'Rows': 3181, 'Columns': 3848, 'PixelSpacing': [0.097928, 0.097928]}
+2025-06-11 03:17:27,826 - dicom_xray_analyzer - INFO - DICOM file path: /Volumes/Data 1/project-dicom-viewer/received_dicom/4425944186/1.2.840.113619.2.421.4.8323328.1734316943.671158.dcm
+2025-06-11 03:17:27,826 - dicom_xray_analyzer - INFO - Ukuran gambar asli: 3848x3181
+2025-06-11 03:17:27,826 - dicom_xray_analyzer - INFO - Memuat model SwinUNETR dari xray_segmentation_model.pt dengan ukuran (96, 96)...
+2025-06-11 03:17:28,078 - dicom_xray_analyzer - ERROR - Gagal memuat model dari xray_segmentation_model.pt: Error(s) in loading state_dict for SwinUNETR:
+	size mismatch for swinViT.patch_embed.proj.weight: copying a param with shape torch.Size([48, 1, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([48, 1, 2, 2]).
+	size mismatch for swinViT.layers1.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 3]) from checkpoint, the shape in current model is torch.Size([169, 3]).
+	size mismatch for swinViT.layers1.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers1.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 3]) from checkpoint, the shape in current model is torch.Size([169, 3]).
+	size mismatch for swinViT.layers1.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers1.0.downsample.reduction.weight: copying a param with shape torch.Size([96, 384]) from checkpoint, the shape in current model is torch.Size([96, 192]).
+	size mismatch for swinViT.layers1.0.downsample.norm.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for swinViT.layers1.0.downsample.norm.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for swinViT.layers2.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 6]) from checkpoint, the shape in current model is torch.Size([169, 6]).
+	size mismatch for swinViT.layers2.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers2.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 6]) from checkpoint, the shape in current model is torch.Size([169, 6]).
+	size mismatch for swinViT.layers2.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers2.0.downsample.reduction.weight: copying a param with shape torch.Size([192, 768]) from checkpoint, the shape in current model is torch.Size([192, 384]).
+	size mismatch for swinViT.layers2.0.downsample.norm.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+	size mismatch for swinViT.layers2.0.downsample.norm.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+	size mismatch for swinViT.layers3.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 12]) from checkpoint, the shape in current model is torch.Size([169, 12]).
+	size mismatch for swinViT.layers3.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers3.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 12]) from checkpoint, the shape in current model is torch.Size([169, 12]).
+	size mismatch for swinViT.layers3.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers3.0.downsample.reduction.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([384, 768]).
+	size mismatch for swinViT.layers3.0.downsample.norm.weight: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+	size mismatch for swinViT.layers3.0.downsample.norm.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+	size mismatch for swinViT.layers4.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 24]) from checkpoint, the shape in current model is torch.Size([169, 24]).
+	size mismatch for swinViT.layers4.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers4.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 24]) from checkpoint, the shape in current model is torch.Size([169, 24]).
+	size mismatch for swinViT.layers4.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers4.0.downsample.reduction.weight: copying a param with shape torch.Size([768, 3072]) from checkpoint, the shape in current model is torch.Size([768, 1536]).
+	size mismatch for swinViT.layers4.0.downsample.norm.weight: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+	size mismatch for swinViT.layers4.0.downsample.norm.bias: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+	size mismatch for encoder1.layer.conv1.conv.weight: copying a param with shape torch.Size([48, 1, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 1, 3, 3]).
+	size mismatch for encoder1.layer.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder1.layer.conv3.conv.weight: copying a param with shape torch.Size([48, 1, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 1, 1, 1]).
+	size mismatch for encoder2.layer.conv1.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder2.layer.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder3.layer.conv1.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for encoder3.layer.conv2.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for encoder4.layer.conv1.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder4.layer.conv2.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder10.layer.conv1.conv.weight: copying a param with shape torch.Size([768, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([768, 768, 3, 3]).
+	size mismatch for encoder10.layer.conv2.conv.weight: copying a param with shape torch.Size([768, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([768, 768, 3, 3]).
+	size mismatch for decoder5.transp_conv.conv.weight: copying a param with shape torch.Size([768, 384, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([768, 384, 2, 2]).
+	size mismatch for decoder5.conv_block.conv1.conv.weight: copying a param with shape torch.Size([384, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([384, 768, 3, 3]).
+	size mismatch for decoder5.conv_block.conv2.conv.weight: copying a param with shape torch.Size([384, 384, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([384, 384, 3, 3]).
+	size mismatch for decoder5.conv_block.conv3.conv.weight: copying a param with shape torch.Size([384, 768, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([384, 768, 1, 1]).
+	size mismatch for decoder4.transp_conv.conv.weight: copying a param with shape torch.Size([384, 192, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([384, 192, 2, 2]).
+	size mismatch for decoder4.conv_block.conv1.conv.weight: copying a param with shape torch.Size([192, 384, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 384, 3, 3]).
+	size mismatch for decoder4.conv_block.conv2.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for decoder4.conv_block.conv3.conv.weight: copying a param with shape torch.Size([192, 384, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([192, 384, 1, 1]).
+	size mismatch for decoder3.transp_conv.conv.weight: copying a param with shape torch.Size([192, 96, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([192, 96, 2, 2]).
+	size mismatch for decoder3.conv_block.conv1.conv.weight: copying a param with shape torch.Size([96, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 192, 3, 3]).
+	size mismatch for decoder3.conv_block.conv2.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for decoder3.conv_block.conv3.conv.weight: copying a param with shape torch.Size([96, 192, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([96, 192, 1, 1]).
+	size mismatch for decoder2.transp_conv.conv.weight: copying a param with shape torch.Size([96, 48, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([96, 48, 2, 2]).
+	size mismatch for decoder2.conv_block.conv1.conv.weight: copying a param with shape torch.Size([48, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 96, 3, 3]).
+	size mismatch for decoder2.conv_block.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for decoder2.conv_block.conv3.conv.weight: copying a param with shape torch.Size([48, 96, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 96, 1, 1]).
+	size mismatch for decoder1.transp_conv.conv.weight: copying a param with shape torch.Size([48, 48, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([48, 48, 2, 2]).
+	size mismatch for decoder1.conv_block.conv1.conv.weight: copying a param with shape torch.Size([48, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 96, 3, 3]).
+	size mismatch for decoder1.conv_block.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for decoder1.conv_block.conv3.conv.weight: copying a param with shape torch.Size([48, 96, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 96, 1, 1]).
+	size mismatch for out.conv.conv.weight: copying a param with shape torch.Size([14, 48, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([1, 48, 1, 1]).
+	size mismatch for out.conv.conv.bias: copying a param with shape torch.Size([14]) from checkpoint, the shape in current model is torch.Size([1]).
+Traceback (most recent call last):
+  File "/Volumes/Data 1/project-dicom-viewer/dicom_xray.py", line 133, in load_model
+    model.load_state_dict(checkpoint) # Asumsi checkpoint adalah state_dict langsung
+  File "/opt/anaconda3/envs/monai_env/lib/python3.10/site-packages/torch/nn/modules/module.py", line 2593, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for SwinUNETR:
+	size mismatch for swinViT.patch_embed.proj.weight: copying a param with shape torch.Size([48, 1, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([48, 1, 2, 2]).
+	size mismatch for swinViT.layers1.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 3]) from checkpoint, the shape in current model is torch.Size([169, 3]).
+	size mismatch for swinViT.layers1.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers1.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 3]) from checkpoint, the shape in current model is torch.Size([169, 3]).
+	size mismatch for swinViT.layers1.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers1.0.downsample.reduction.weight: copying a param with shape torch.Size([96, 384]) from checkpoint, the shape in current model is torch.Size([96, 192]).
+	size mismatch for swinViT.layers1.0.downsample.norm.weight: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for swinViT.layers1.0.downsample.norm.bias: copying a param with shape torch.Size([384]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for swinViT.layers2.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 6]) from checkpoint, the shape in current model is torch.Size([169, 6]).
+	size mismatch for swinViT.layers2.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers2.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 6]) from checkpoint, the shape in current model is torch.Size([169, 6]).
+	size mismatch for swinViT.layers2.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers2.0.downsample.reduction.weight: copying a param with shape torch.Size([192, 768]) from checkpoint, the shape in current model is torch.Size([192, 384]).
+	size mismatch for swinViT.layers2.0.downsample.norm.weight: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+	size mismatch for swinViT.layers2.0.downsample.norm.bias: copying a param with shape torch.Size([768]) from checkpoint, the shape in current model is torch.Size([384]).
+	size mismatch for swinViT.layers3.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 12]) from checkpoint, the shape in current model is torch.Size([169, 12]).
+	size mismatch for swinViT.layers3.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers3.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 12]) from checkpoint, the shape in current model is torch.Size([169, 12]).
+	size mismatch for swinViT.layers3.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers3.0.downsample.reduction.weight: copying a param with shape torch.Size([384, 1536]) from checkpoint, the shape in current model is torch.Size([384, 768]).
+	size mismatch for swinViT.layers3.0.downsample.norm.weight: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+	size mismatch for swinViT.layers3.0.downsample.norm.bias: copying a param with shape torch.Size([1536]) from checkpoint, the shape in current model is torch.Size([768]).
+	size mismatch for swinViT.layers4.0.blocks.0.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 24]) from checkpoint, the shape in current model is torch.Size([169, 24]).
+	size mismatch for swinViT.layers4.0.blocks.0.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers4.0.blocks.1.attn.relative_position_bias_table: copying a param with shape torch.Size([2197, 24]) from checkpoint, the shape in current model is torch.Size([169, 24]).
+	size mismatch for swinViT.layers4.0.blocks.1.attn.relative_position_index: copying a param with shape torch.Size([343, 343]) from checkpoint, the shape in current model is torch.Size([49, 49]).
+	size mismatch for swinViT.layers4.0.downsample.reduction.weight: copying a param with shape torch.Size([768, 3072]) from checkpoint, the shape in current model is torch.Size([768, 1536]).
+	size mismatch for swinViT.layers4.0.downsample.norm.weight: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+	size mismatch for swinViT.layers4.0.downsample.norm.bias: copying a param with shape torch.Size([3072]) from checkpoint, the shape in current model is torch.Size([1536]).
+	size mismatch for encoder1.layer.conv1.conv.weight: copying a param with shape torch.Size([48, 1, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 1, 3, 3]).
+	size mismatch for encoder1.layer.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder1.layer.conv3.conv.weight: copying a param with shape torch.Size([48, 1, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 1, 1, 1]).
+	size mismatch for encoder2.layer.conv1.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder2.layer.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for encoder3.layer.conv1.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for encoder3.layer.conv2.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for encoder4.layer.conv1.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder4.layer.conv2.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder10.layer.conv1.conv.weight: copying a param with shape torch.Size([768, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([768, 768, 3, 3]).
+	size mismatch for encoder10.layer.conv2.conv.weight: copying a param with shape torch.Size([768, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([768, 768, 3, 3]).
+	size mismatch for decoder5.transp_conv.conv.weight: copying a param with shape torch.Size([768, 384, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([768, 384, 2, 2]).
+	size mismatch for decoder5.conv_block.conv1.conv.weight: copying a param with shape torch.Size([384, 768, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([384, 768, 3, 3]).
+	size mismatch for decoder5.conv_block.conv2.conv.weight: copying a param with shape torch.Size([384, 384, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([384, 384, 3, 3]).
+	size mismatch for decoder5.conv_block.conv3.conv.weight: copying a param with shape torch.Size([384, 768, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([384, 768, 1, 1]).
+	size mismatch for decoder4.transp_conv.conv.weight: copying a param with shape torch.Size([384, 192, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([384, 192, 2, 2]).
+	size mismatch for decoder4.conv_block.conv1.conv.weight: copying a param with shape torch.Size([192, 384, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 384, 3, 3]).
+	size mismatch for decoder4.conv_block.conv2.conv.weight: copying a param with shape torch.Size([192, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for decoder4.conv_block.conv3.conv.weight: copying a param with shape torch.Size([192, 384, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([192, 384, 1, 1]).
+	size mismatch for decoder3.transp_conv.conv.weight: copying a param with shape torch.Size([192, 96, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([192, 96, 2, 2]).
+	size mismatch for decoder3.conv_block.conv1.conv.weight: copying a param with shape torch.Size([96, 192, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 192, 3, 3]).
+	size mismatch for decoder3.conv_block.conv2.conv.weight: copying a param with shape torch.Size([96, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 96, 3, 3]).
+	size mismatch for decoder3.conv_block.conv3.conv.weight: copying a param with shape torch.Size([96, 192, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([96, 192, 1, 1]).
+	size mismatch for decoder2.transp_conv.conv.weight: copying a param with shape torch.Size([96, 48, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([96, 48, 2, 2]).
+	size mismatch for decoder2.conv_block.conv1.conv.weight: copying a param with shape torch.Size([48, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 96, 3, 3]).
+	size mismatch for decoder2.conv_block.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for decoder2.conv_block.conv3.conv.weight: copying a param with shape torch.Size([48, 96, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 96, 1, 1]).
+	size mismatch for decoder1.transp_conv.conv.weight: copying a param with shape torch.Size([48, 48, 2, 2, 2]) from checkpoint, the shape in current model is torch.Size([48, 48, 2, 2]).
+	size mismatch for decoder1.conv_block.conv1.conv.weight: copying a param with shape torch.Size([48, 96, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 96, 3, 3]).
+	size mismatch for decoder1.conv_block.conv2.conv.weight: copying a param with shape torch.Size([48, 48, 3, 3, 3]) from checkpoint, the shape in current model is torch.Size([48, 48, 3, 3]).
+	size mismatch for decoder1.conv_block.conv3.conv.weight: copying a param with shape torch.Size([48, 96, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([48, 96, 1, 1]).
+	size mismatch for out.conv.conv.weight: copying a param with shape torch.Size([14, 48, 1, 1, 1]) from checkpoint, the shape in current model is torch.Size([1, 48, 1, 1]).
+	size mismatch for out.conv.conv.bias: copying a param with shape torch.Size([14]) from checkpoint, the shape in current model is torch.Size([1]).

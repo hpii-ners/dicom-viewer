@@ -1,0 +1,6 @@
+monai[nibabel]==1.3.0 # atau versi terbaru yang Anda inginkan
+torch==2.7.1 # Sesuaikan dengan versi yang kompatibel dengan CUDA/CPU Anda
+numpy==1.26.4 # atau versi terbaru
+watchdog==4.0.1 # atau versi terbaru
+pydicom==2.4.3 # atau versi terbaru (untuk dicom_server.py)
+pynetdicom==2.0.0 # atau versi terbaru (untuk dicom_server.py)
